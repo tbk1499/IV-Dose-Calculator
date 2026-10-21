@@ -200,11 +200,9 @@ footer{text-align:center;padding:8px 20px 20px;color:var(--muted);font-size:10px
     border-radius:1.5mm!important;
   }
   body.print-label-mode #vialLabel .label-warning{
-    font-size:6.5pt!important;
-    margin-top:2mm!important;
-    line-height:1.2!important;
-    overflow-wrap:anywhere!important;
-    white-space:normal!important;
+    font-size:7.5pt!important;
+    margin-top:3mm!important;
+    line-height:1.35!important;
   }
   body.print-label-mode #vialLabel .label-footer{
     font-size:7pt!important;
@@ -323,6 +321,7 @@ footer{text-align:center;padding:8px 20px 20px;color:var(--muted);font-size:10px
 <div class="action-row">
 
 <button class="print-btn" type="button" onclick="saveCalculation()">💾 บันทึกประวัติในเครื่อง</button>
+<button class="print-btn" type="button" onclick="printResult()">🖨️ พิมพ์ผลคำนวณ</button>
 </div>
 <div style="display:flex;align-items:center;gap:10px">
   <div style="font-size:28px">🩺</div>
@@ -419,7 +418,32 @@ footer{text-align:center;padding:8px 20px 20px;color:var(--muted);font-size:10px
   <div class="formula" id="formula">กรอกน้ำหนักและอัตราการให้ยาเพื่อคำนวณ</div>
 </div>
 
+<div id="labelPreviewTitle" class="label-preview-title">🏷️ ตัวอย่างฉลากยา</div>
+<div id="vialLabel" class="vial-label" aria-hidden="true">
+  <h2>IV MEDICATION LABEL</h2>
+  <div class="label-drug" id="labelDrug">—</div>
+  <div class="label-row"><span>ผู้ป่วย</span><b id="labelPatient">—</b></div>
+  <div class="label-row"><span>น้ำหนัก</span><b id="labelWeight">— kg</b></div>
+  <div class="label-row"><span>เตียง</span><b id="labelBed">—</b></div>
+  <div class="label-row"><span>การเตรียม</span><b id="labelPrep">—</b></div>
+  <div class="label-row"><span>สารละลาย</span><b id="labelDilution">—</b></div>
+  <div class="label-row"><span>Rate</span><b id="labelRate">— mL/hr</b></div>
+  <div class="label-dose" id="labelDose">Dose: —</div>
+  <div class="label-warning">⚠ ตรวจสอบชื่อผู้ป่วย ชนิดยา ความเข้มข้น อัตราการให้ และคำสั่งการรักษาก่อนติดฉลาก</div>
+  <div class="label-footer">CVT2 • IV Dose Calculator</div>
+</div>
 
+<div class="label-actions" id="labelActions" style="margin-top:12px">
+  <div class="label-options" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px">
+    <span style="font-weight:800">ขนาดฉลาก:</span>
+    <select id="labelSize" aria-label="ขนาดฉลากติดขวดยา" style="width:auto;min-width:145px">
+      <option value="50x80">50 × 80 mm</option>
+      <option value="60x90">60 × 90 mm</option>
+      <option value="70x100" selected>70 × 100 mm</option>
+    </select>
+  </div>
+  <button class="print-btn label-btn" type="button" onclick="printVialLabel()" style="width:100%">🏷️ พิมพ์ฉลากติดขวดยา</button>
+</div>
 </div>
 
 <div class="card side-card" id="sideEffectsCard">
@@ -488,37 +512,6 @@ footer{text-align:center;padding:8px 20px 20px;color:var(--muted);font-size:10px
   </div>
   <p class="print-safety">โปรดตรวจสอบคำสั่งการรักษา ชื่อผู้ป่วย ยา ความเข้มข้น หน่วย และผลคำนวณโดยบุคลากรผู้รับผิดชอบก่อนใช้จริง</p>
 </section>
-
-<div class="card label-preview-card" id="labelActions" style="margin-top:16px">
-  <div class="section-title">🏷️ ตัวอย่างฉลากยา</div>
-  <p class="small" style="margin:-4px 0 10px">ตรวจสอบข้อมูลและข้อความผลข้างเคียงบนฉลากก่อนพิมพ์</p>
-  <div id="labelPreviewTitle" class="label-preview-title">🏷️ ตัวอย่างฉลากยา</div>
-<div id="vialLabel" class="vial-label" aria-hidden="true">
-  <h2>IV MEDICATION LABEL</h2>
-  <div class="label-drug" id="labelDrug">—</div>
-  <div class="label-row"><span>ผู้ป่วย</span><b id="labelPatient">—</b></div>
-  <div class="label-row"><span>น้ำหนัก</span><b id="labelWeight">— kg</b></div>
-  <div class="label-row"><span>เตียง</span><b id="labelBed">—</b></div>
-  <div class="label-row"><span>การเตรียม</span><b id="labelPrep">—</b></div>
-  <div class="label-row"><span>สารละลาย</span><b id="labelDilution">—</b></div>
-  <div class="label-row"><span>Rate</span><b id="labelRate">— mL/hr</b></div>
-  <div class="label-dose" id="labelDose">Dose: —</div>
-  <div class="label-warning" id="labelWarning">⚠️ ผลข้างเคียงและการเฝ้าระวังจะแสดงตามยาที่เลือก</div>
-  <div class="label-footer">CVT2 • IV Dose Calculator</div>
-</div>
-
-<div class="label-actions" id="labelPrintControls" style="margin-top:12px">
-  <div class="label-options" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px">
-    <span style="font-weight:800">ขนาดฉลาก:</span>
-    <select id="labelSize" aria-label="ขนาดฉลากติดขวดยา" style="width:auto;min-width:145px">
-      <option value="50x80">50 × 80 mm</option>
-      <option value="60x90">60 × 90 mm</option>
-      <option value="70x100" selected>70 × 100 mm</option>
-    </select>
-  </div>
-  <button class="print-btn label-btn" type="button" onclick="printVialLabel()" style="width:100%">🏷️ พิมพ์ฉลากติดขวดยา</button>
-</div>
-</div>
 
 </main>
 <nav class="bottom-nav" aria-label="เมนูหลัก">
@@ -755,15 +748,6 @@ function clearLocalHistory(){
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#039;"}[m]));}
 
-function getLabelSafetyText(){
-  const drugName=$("drugSelect").value;
-  const info=sideEffects[drugName];
-  if(!info) return "⚠️ ผลข้างเคียงและการเฝ้าระวัง: ไม่มีข้อมูลในระบบสำหรับยานี้";
-  const effects=(Array.isArray(info.items)?info.items:[]).join(" • ");
-  const monitor=info.monitor||"ไม่มีข้อมูลจุดเฝ้าระวัง";
-  return "⚠️ ผลข้างเคียง: "+(effects||"ไม่มีข้อมูล")+" | เฝ้าระวัง: "+monitor;
-}
-
 function updateVialLabelPreview(show=true){
   const d=drugs[$("drugSelect").value]; if(!d) return;
   const amount=parseFloat($("drugAmount").value), total=parseFloat($("totalMl").value), rate=parseFloat($("rate").value), weight=parseFloat($("weight").value);
@@ -775,7 +759,6 @@ function updateVialLabelPreview(show=true){
   $("labelDilution").textContent=$("diluentText").value||d.diluent||"—";
   $("labelRate").textContent=(Number.isFinite(rate)?fmt(rate):"—")+" mL/hr";
   $("labelDose").textContent="Dose: "+($("dose").textContent||"—")+" "+d.doseUnit;
-  $("labelWarning").textContent=getLabelSafetyText();
   const label=$("vialLabel"), title=$("labelPreviewTitle");
   if(show){label.classList.add("preview-visible"); title?.classList.add("preview-show"); label.setAttribute("aria-hidden","false");}
   else{label.classList.remove("preview-visible"); title?.classList.remove("preview-show"); label.setAttribute("aria-hidden","true");}
@@ -797,7 +780,6 @@ function printVialLabel(){
   $("labelDilution").textContent=$("diluentText").value||d.diluent||"—";
   $("labelRate").textContent=(parseFloat($("rate").value)||"—")+" mL/hr";
   $("labelDose").textContent="Dose: "+$("dose").textContent+" "+d.doseUnit;
-  $("labelWarning").textContent=getLabelSafetyText();
 
   const label=document.getElementById("vialLabel");
   label.style.width=w+"mm";
@@ -832,7 +814,7 @@ function printVialLabel(){
     .vial-label .label-drug{font-size:17pt;font-weight:900;text-align:center;margin:1mm 0 3mm}
     .vial-label .label-row{display:flex;justify-content:space-between;gap:3mm;border-bottom:.2mm solid #bbb;padding:1.4mm 0;font-size:9.5pt}
     .vial-label .label-dose{font-size:13pt;font-weight:900;text-align:center;margin:3mm 0;padding:2mm;border:.4mm solid #111;border-radius:1.5mm}
-    .vial-label .label-warning{font-size:6.5pt;margin-top:2mm;line-height:1.2;overflow-wrap:anywhere;white-space:normal}
+    .vial-label .label-warning{font-size:7.5pt;margin-top:3mm;line-height:1.35}
     .vial-label .label-footer{font-size:7pt;margin-top:2mm;text-align:center}
     .mobile-print-actions{position:fixed;left:8px;right:8px;bottom:8px;display:flex;gap:8px;z-index:10}
     .mobile-print-actions button{flex:1;border:0;border-radius:10px;padding:12px;font-weight:800;font-size:14px;background:#0b3d5c;color:#fff}
@@ -984,7 +966,7 @@ $("drugSelect").addEventListener("change",loadDrug);
 $("diluentText").addEventListener("change",calc);
 $("reverseBtn").addEventListener("click",reverseCalc);
 // Google Apps Script Web App URL: paste the deployed /exec URL here after deployment.
-const DRUG_PROPOSAL_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz9Su4eSK3SDkos5QFOzTbtiefZZPHbVBBuusQF6yPCqU_1Zvx6cBzZnDRfHlrfSxT4/exec";
+const DRUG_PROPOSAL_WEB_APP_URL = "PASTE_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
 const proposalForm = $("drugProposalForm");
 const proposalStatus = $("proposalStatus");
 const proposalFrame = $("proposalSubmitFrame");
@@ -1018,7 +1000,7 @@ proposalForm.addEventListener("submit", function(ev){
   // Cross-origin iframe cannot be read reliably; this is a fallback notice, not proof of receipt.
   setTimeout(()=>{
     if(proposalPending){
-      showProposalStatus("ส่งคำขอแล้ว แต่หน้าเว็บไม่ได้รับข้อความยืนยันกลับจาก Google Apps Script หากพบรายการใน Google Sheets และได้รับอีเมลแล้ว แสดงว่าการบันทึกสำเร็จ โปรดอย่าส่งซ้ำ", "ok");
+      showProposalStatus("ส่งคำขอแล้ว แต่ยังยืนยันการบันทึกไม่ได้จากหน้านี้ หากไม่ได้รับอีเมลแจ้งเตือน โปรดตรวจสอบการตั้งค่า Apps Script", "err");
       proposalPending = false;
     }
   }, 8000);
